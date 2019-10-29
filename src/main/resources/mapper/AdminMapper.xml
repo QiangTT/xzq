@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zb.mapper.AdminMapper">
+    <resultMap id="adminResultmap" type="modules">
+        <id property="id" column="id"/>
+        <collection property="rightList" ofType="rights">
+            <result column="rightUrl" property="url"/>
+            <result column="rightName" property="name"/>
+        </collection>
+    </resultMap>
+
+    <sql id="baseSelect">
+        select
+          id,name,loginname,loginpassword,phone,email,enrolLdatetime
+        from
+          admins
+    </sql>
+
+    <select id="selectByUsernameAndPassword" resultType="admins">
+        <include refid="baseSelect"/>
+        where loginname=#{loginname} and loginpassword=#{loginpassword}
+    </select>
+    <select id="selectAll" resultType="admins">
+        <include refid="baseSelect"/>
+    </select>
+    
+    <select id="selectModulesByAdminId" resultMap="adminResultmap">
+        SELECT ri.name rightName,ri.url rightUrl, m.name,m.id,m.url FROM admins a LEFT JOIN adminroles ar ON a.id=ar.adminid LEFT JOIN roles ro ON ar.roleid=ro.id
+LEFT JOIN rolerights rr ON rr.roleid=ro.id LEFT JOIN rights ri ON rr.rightid=ri.id LEFT JOIN modules m ON ri.moduleid=m.id
+        where a.id=#{adminId}
+    </select>
+</mapper>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zb.mapper.ReckonMapper">
+    <select id="selectBusiness" resultType="Usersbusiness">
+        select usersbusiness.ID id,users.NAME userName,usersbusiness.LOGINNAME loginname,TOTALFEE totalFee,year(LOGINDATETIME) year,month (LOGINDATETIME) month,LABIP labip,LOGINDATETIME,TIME,pricings.NAME feeName,pricings.BASEFEE baseFee
+        from users
+        inner join usersbusiness on users.ID=usersbusiness.USERID
+        inner join pricings on usersbusiness.PRICEID=pricings.ID
+        <where>
+            <if test="id!=null"> usersbusiness.BILLID=#{id}</if>
+        </where>
+    </select>
+    <select id="selectBills" resultType="bill">
+        select bill.ID id,users.NAME userName,bill.LOGINNAME loginName,TOTALFEE totalFee,year(LOGINDATETIME) year,month (LOGINDATETIME) month
+        from bill
+        inner join users on bill.USERID = users.ID
+        <where>
+            <if test="userName!=null and userName!=''">
+                users.NAME=#{userName}
+            </if>
+            <if test="year!=-1 and year!=null" >
+                and year(bill.LOGINDATETIME)=#{year}
+            </if>
+            <if test="month!=-1 and month!=null">
+                and month (bill.LOGINDATETIME)=#{month}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectOne" resultType="Usersbusiness">
+        select LOGINDATETIME from usersbusiness where id=#{id}
+    </select>
+</mapper>

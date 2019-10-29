@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zb.mapper.RoleRightMapper">
+    <insert id="insert">
+        insert into rolerights (ROLEID, RIGHTID) values
+        <foreach collection="array" item="roleRights" separator=",">
+            (#{roleRights.roleId},#{roleRights.rightId})
+        </foreach>
+    </insert>
+    
+    <delete id="deleteByRoleId">
+        delete from rolerights where ROLEID=#{roleId}
+    </delete>
+</mapper>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zb.mapper.UserMapper">
+    <sql id="baseSelect">
+        select
+          id,name,loginname,loginpassword,status,phone,email,enrolLdatetime,closEdatetime,paymenttype,career,nationality,sex,company,zip
+        from
+          users
+    </sql>
+    <select id="selectusersByUsernameAndPassword" resultType="users">
+        <include refid="baseSelect"/>
+        where loginname=#{loginname} and loginpassword=#{loginpassword}
+    </select>
+</mapper>

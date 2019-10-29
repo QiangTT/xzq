@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zb.mapper.PricingsDao">
+
+
+<select id="selectAll" resultType="Pricings" >
+   select id,name,basefee,ratefee,description from pricings
+</select>
+    <select id="selectByname" resultType="Pricings" >
+   select id,name,basefee,ratefee,description
+   from pricings
+   where name=#{name}
+</select>
+
+<insert id="insert">
+    insert into pricings (name,ratefee,basefee,description) values (#{name},#{ratefee},#{basefee},#{description})
+</insert>
+
+<delete id="delete">
+    delete from pricings where id=#{id}
+</delete>
+
+    <select id="selectById" resultType="Pricings">
+    select id,name,basefee,ratefee,description from pricings where id=#{id}
+</select>
+
+
+    <update id="update" >
+        update pricings set name=#{name},basefee=#{basefee},ratefee=#{ratefee},description=#{description} where id=#{id}
+    </update>
+
+    <select id="selectBynameAndprices" resultType="Pricings" parameterType="cn.zb.vo.Condition">
+        <choose>
+            <when test="name!=null and name!=''">
+                <bind name="name" value="'%'+name+'%'"></bind>
+            </when>
+
+        </choose>
+        select
+        id,name,basefee,ratefee,description from pricings
+        <where>
+           <if test="name!=null and name!=''">
+                name like #{name}
+            </if>
+            <if test="minbasefee != null">
+               and basefee >= #{minbasefee}
+            </if>
+            <if test="maxbasefee!=null">
+                and basefee &lt; #{maxbasefee}
+            </if>
+            <if test="minratefee != null">
+                and ratefee >= #{minratefee}
+            </if>
+            <if test="maxratefee != null">
+                and ratefee &lt; #{maxratefee}
+            </if>
+        </where>
+    </select>
+</mapper>

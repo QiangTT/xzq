@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zb.mapper.AccountMapper">
+    <select id="selectYears" resultType="Detailyears">
+        select LABIP labip,year(LOGOUTTIME) logouttime,DURATION duration from detailyears
+    </select>
+    <select id="selectByYear" resultType="Detailyears">
+        select LABIP labip,year(LOGOUTTIME) logouttime,DURATION duration from detailyears where year(LOGOUTTIME)=#{year}
+    </select>
+    <select id="selectMonths" resultType="Detailmonths">
+        select month(LOGOUTTIME) logouttime,DURATION duration from detailmonths where year(LOGOUTTIME)=#{year} and LABIP = #{ip}
+    </select>
+    <select id="selectAllMonths" resultType="Detailmonths">
+        select year(LOGOUTTIME) year,month(LOGOUTTIME) month,DURATION duration ,LABIP labip from detailmonths
+    </select>
+    <select id="selectMonthByYeaAndMonth" resultType="Detailmonths">
+        select year(LOGOUTTIME) year,month(LOGOUTTIME) month,DURATION duration ,LABIP labip from detailmonths where 1=1
+        <if test="year!=-1">
+            and year(LOGOUTTIME)=#{year}
+        </if>
+        <if test="month!=-1">
+            and month(LOGOUTTIME)=#{month}
+        </if>
+    </select>
+    <select id="selectDays" resultType="Detaildays">
+        select day(LOGOUTTIME) logouttime,DURATION duration
+        from detaildays
+        where year(LOGOUTTIME)=#{year} and month(LOGOUTTIME)=#{month}
+    </select>
+</mapper>

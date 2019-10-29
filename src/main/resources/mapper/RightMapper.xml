@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zb.mapper.RightMapper">
+    <resultMap id="rightResultmap" type="rights">
+        <association property="module" javaType="modules">
+            <result property="name" column="modulename"></result>
+        </association>
+        <association property="operation" javaType="operations">
+            <result property="name" column="operationname"></result>
+        </association>
+    </resultMap>
+
+    <select id="selectByCondition" resultMap="rightResultmap">
+        select r.id,r.name,r.url,m.name as modulename ,o.name as operationname  from rights r join modules m on r.MODULEID = m.id join operations o on r.OPERATIONID = o.ID
+        <where>
+            <if test="moduleName !=null and moduleName != ''">
+               m.name like concat('%',#{moduleName},'%')
+            </if>
+            <if test="operationName !=null and operationName != ''">
+              and  o.name like concat('%',#{operationName},'%')
+            </if>
+
+        </where>
+        limit #{pageStart},#{pageSize}
+    </select>
+
+    <select id="selectCount" resultType="int">
+        select count(*) from rights r join modules m on r.MODULEID = m.id join operations o on r.OPERATIONID = o.ID
+        <where>
+            <if test="moduleName !=null and moduleName != ''">
+                m.name like concat('%',#{moduleName},'%')
+            </if>
+            <if test="operationName !=null and operationName != ''">
+                and  o.name like concat('%',#{operationName},'%')
+            </if>
+
+        </where>
+    </select>
+    
+    <select id="selectById" resultType="rights">
+        select id,name,url from rights where id=#{id}
+    </select>
+    
+    <select id="selectAll" resultMap="rightResultmap">
+         select r.id,r.name,m.name as modulename ,o.name as operationname  from rights r join modules m on r.MODULEID = m.id join operations o on r.OPERATIONID = o.ID
+    </select>
+    
+    <update id="update">
+        update rights set name=#{name},URL=#{url},MODULEID=#{module.id},OPERATIONID=#{operation.id} where id=#{id}
+    </update>
+</mapper>

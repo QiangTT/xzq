@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.zb.mapper.RoleMapper">
+    <sql id="rolesql">
+           <if test="roleName !=null and roleName !=''">
+         where name like concat('%',#{roleName},'%')
+        </if>
+    </sql>
+
+    <resultMap id=
+                       "roleResultmap1" type="roles">
+        <id property="id" column="id"></id>
+        <collection property="rightsList" ofType="rights">
+            <result column="url" property="url"/>
+            <result column="rightName" property="name"/>
+            <association property="module" javaType="modules">
+                <result column="moduleName" property="name"/>
+            </association>
+            <association property="operation" javaType="operations">
+                <result column="operationName" property="name"/>
+            </association>
+        </collection>
+    </resultMap>
+
+    <resultMap id="roleResultmap2" type="roles">
+        <id property="id" column="id"></id>
+        <collection property="rightsList" ofType="rights">
+            <id property="id" column="rightId"></id>
+        </collection>
+    </resultMap>
+
+    <select id="selectByCondition" resultMap="roleResultmap1">
+        SELECT ro.id,ro.name,ri.name rightName,ri.url,m.name moduleName,o.NAME operationName FROM (SELECT  id,NAME FROM roles <include
+            refid="rolesql"/> LIMIT #{pageStart},#{pageSize}) ro LEFT JOIN rolerights rr ON ro.id=rr.roleid
+LEFT JOIN rights ri ON rr.`RIGHTID`=ri.id LEFT JOIN modules m ON ri.moduleid = m.id LEFT JOIN operations o ON ri.operationid = o.id
+
+
+    </select>
+    
+    <select id="selectCountByCondition" resultType="int">
+        select count(*) from roles
+        <include refid="rolesql"/>
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into roles (name) values (#{name})
+    </insert>
+
+    <select id="selectById" resultMap="roleResultmap2">
+        SELECT ro.id,ro.name,ri.id rightId FROM (SELECT id,NAME FROM roles) ro LEFT JOIN rolerights rr ON ro.id= rr.ROLEID LEFT JOIN rights ri ON rr.RIGHTID=ri.ID WHERE ro.id=#{rightId}
+    </select>
+    
+    <update id="updateById">
+        update roles set name=#{name} where id=#{id}
+    </update>
+
+    <delete id="delete">
+        delete from roles where id=#{roleId}
+    </delete>
+</mapper>
